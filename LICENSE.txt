@@ -1,0 +1,27 @@
+Oppai-HQ Dataset is a Not-Safe-For-Work (NSWF) image dataset of human breasts(aka: oppai, boobs, or tits), include man and woman,
+originally created as a AI-Camera App for Object-detection:
+
+The individual images were published in Flickr by their respective authors
+under either All Rights Reserved, Creative Commons BY 2.0, Creative Commons BY-NC 2.0,
+Public Domain Mark 1.0, or Public Domain CC0 1.0.
+Not All of these licenses allow free use, redistribution, and adaptation
+for non-commercial purposes. However, some of them require giving appropriate
+credit to the original author, as well as indicating any changes that were
+made to the images. The license and original author of each image can be output by script.
+
+    All Rights Reserved
+    https://creativecommons.org/licenses/by/2.0/
+    https://creativecommons.org/licenses/by-nc/2.0/
+    https://creativecommons.org/publicdomain/mark/1.0/
+    https://creativecommons.org/publicdomain/zero/1.0/
+    http://www.usa.gov/copyright.shtml
+
+
+The dataset itself (including sqlite database, download script, and
+documentation) is made available under Creative Commons BY-NC-SA 4.0 license
+by Oppai-Dataset Corporation. You can use, redistribute, and adapt it for
+non-commercial purposes, as long as you (a) give star to our github,
+(b) indicate any changes that you've made, and
+(c) distribute any derivative works under the same license.
+
+    https://creativecommons.org/licenses/by-nc-sa/4.0/
