@@ -98,9 +98,9 @@ Waiting for Paper review...
 
 ## Create BY Oppai-HQ Organization
 
-* Glenn George (gg46power@gmail.com)
+* Glenn George (gg46power__at__gmail.com)
 * William Collins
-* Evan Kuo
+* Evan Kuo (scsonic__at__gmail.com)
 * Kiyota Shukishi
 
 ## Privacy
