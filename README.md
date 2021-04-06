@@ -9,7 +9,7 @@
 ![Resolution 1024&times;1024](https://img.shields.io/badge/Resolution-1024x1024-green.svg?style=flat_square)
 ![Images 17000+](https://img.shields.io/badge/images-17,000-green.svg?style=flat_square)
 ![Image Size](https://img.shields.io/badge/image_size-73gb-green.svg?style=flat_square)
-![Teaser image](./media/grid2.png)
+![Teaser image](https://i.imgur.com/439jbTx.jpg)
 
 Oppai-HQ (OppaiHQ) is a high-quality image dataset of human breasts, originally created for object-detection.
 
@@ -23,7 +23,7 @@ For pre-train ai-model inquiries, please contact [glenn](mailto:gg46power@gmail.
 the database db file is hosted on Git and can be download from Flickr with python.
 
 High-level statistics:
-![chart](./media/oppai_chart.png)
+![chart](https://i.imgur.com/En7UpvE.jpg)
 Note: size classification accuracy is NOT enough, we need improve.
 
 ## Download script
