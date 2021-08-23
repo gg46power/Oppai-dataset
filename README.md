@@ -11,6 +11,15 @@
 ![Image Size](https://img.shields.io/badge/image_size-73gb-green.svg?style=flat_square)
 ![Teaser image](https://i.imgur.com/439jbTx.jpg)
 
+
+
+
+
+
+
+https://user-images.githubusercontent.com/5320986/130378746-fe1f96ad-8352-4cf2-8418-d8b0c592c6af.mp4
+
+
 Oppai-HQ (OppaiHQ) is a high-quality image dataset of human breasts, originally created for object-detection.
 
 The dataset consists of 17K+, 73GB+ flickr image links, from 200x200 to 1024x1024+ resolution after crop bbox annotation.
