@@ -63,6 +63,20 @@ class OppaiDB(Base):
         OppaiDB.engine = engine
 
     @staticmethod
+    def convertYolo(size, box):
+        dw = 1. / (size[0])
+        dh = 1. / (size[1])
+        x = (box[0] + box[1]) / 2.0
+        y = (box[2] + box[3]) / 2.0
+        w = box[1] - box[0]
+        h = box[3] - box[2]
+        x = x * dw
+        w = w * dw
+        y = y * dh
+        h = h * dh
+        return (x, y, w, h)
+
+    @staticmethod
     def get_voc_string(filename, orig_w, orig_h, l, t, w, h):
         voc_template = '''
 <annotation>
@@ -110,7 +124,7 @@ def choose_bytes_unit(num_bytes):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Download Oppai-HQ dataset to current working directory.')
     parser.add_argument('-c', '--crop', help='default=1, enable crop img to crop directory', type=int,
-                        default=1, dest="crop")
+                        default=0, dest="crop")
     parser.add_argument('-x', '--xml', help='default=1, create xml file to xml directory', type=int,
                         default=1, dest="xml")
     parser.add_argument('-t', '--test', help='test script, Skip Image Download', type=int, default=0,
@@ -119,6 +133,8 @@ if __name__ == "__main__":
                         default="oppai_lite.db")
     parser.add_argument('-i', '--info', help='get image information url', dest="info",
                         default=0)
+    parser.add_argument('-y', '--yolo', help='output yolo format', dest="yolo",
+                        default=1)
 
 
     args = parser.parse_args()
@@ -127,6 +143,8 @@ if __name__ == "__main__":
     IS_XML = True if args.xml == 1 else False
     IS_TEST = False if args.test == 0 else True
     IS_INFO = False if args.info == 0 else True
+    IS_YOLO = False if args.yolo == 0 else True
+
     # print("args=", IS_CROP, IS_XML, IS_TEST)
 
     OppaiDB.open_db(args.db_filename)
@@ -158,43 +176,65 @@ if __name__ == "__main__":
 
     # start
     for row in result:
-        filename = row["filename"]
-        index = index + 1
+        try:
+            filename = row["filename"]
+            index = index + 1
 
-        prefix = "[%3d/%3d]" % (index, total_count)
-        if os.path.exists(os.path.join(jpg_path, filename)):
-            print(prefix, "[SKIP] file exist ", filename)
-            continue
+            prefix = "[%3d/%3d]" % (index, total_count)
+            if os.path.exists(os.path.join(jpg_path, filename)):
+                print(prefix, "[SKIP] file exist ", filename)
+                continue
 
-        choose_bytes_unit(total_size)
-        size_unit, float_file_size = choose_bytes_unit(row["size"])
-        print(prefix, "[Download]", row["url"], float_file_size, size_unit)
+            choose_bytes_unit(total_size)
+            size_unit, float_file_size = choose_bytes_unit(row["size"])
+            print(prefix, "[Download]", row["url"], float_file_size, size_unit)
 
-        if not IS_TEST:
-            urllib.request.urlretrieve(row["url"], os.path.join(jpg_path, filename))
+            if not IS_TEST:
+                urllib.request.urlretrieve(row["url"], os.path.join(jpg_path, filename))
 
-        if IS_XML:
-            full_voc_str = OppaiDB.get_voc_string(
-                os.path.join(jpg_path, filename),
-                row["width"],
-                row["height"],
-                row["l"],
-                row["t"],
-                row["w"],
-                row["h"],
-            )
-            xml_open = open(os.path.join(xml_path, filename.replace(".jpg", ".xml")), "w")
-            xml_open.write(full_voc_str)
-            xml_open.close()
+            if IS_YOLO:
+                print("@@ start yolo")
+                # call voc to xml for yolo
+                print(row)
+                yx, yy, yw, yh = OppaiDB.convertYolo([row["width"],row["height"]],
+                      [row["l"],
+                       row["l"] + row["w"],
+                       row["t"],
+                       row["t"] + row["h"]])
+                yolo_txt = "0 " + str(yx) + " " + str(yy) + " " + str(yw) + " " + str(yh)
+                yolo_open = open(os.path.join(jpg_path, filename.replace(".jpg", ".txt")), "w")
+                print(os.path.join(jpg_path, filename.replace(".jpg", ".txt")), yolo_txt)
+                yolo_open.write(yolo_txt)
+                yolo_open.close()
 
-        if IS_CROP:
-            img = cv2.imread(os.path.join(jpg_path, filename))
-            crop_img = img[row['l']:row['l'] + row["h"], row['t']:row['t'] + row["w"]]
-            cv2.imwrite(os.path.join(crop_path, filename), crop_img)
+            if IS_XML:
+                full_voc_str = OppaiDB.get_voc_string(
+                    os.path.join(jpg_path, filename),
+                    row["width"],
+                    row["height"],
+                    row["l"],
+                    row["t"],
+                    row["w"],
+                    row["h"],
+                )
+                xml_open = open(os.path.join(xml_path, filename.replace(".jpg", ".xml")), "w")
+                xml_open.write(full_voc_str)
+                xml_open.close()
 
-        if IS_INFO:
-            info_url = "https://www.flickr.com/photo.gne?id=" + row["image_id"]
+            if IS_CROP:
+                img = cv2.imread(os.path.join(jpg_path, filename))
+                crop_img = img[row['l']:row['l'] + row["h"], row['t']:row['t'] + row["w"]]
+                cv2.imwrite(os.path.join(crop_path, filename), crop_img)
 
-            xml_open = open(os.path.join(xml_path, filename.replace(".jpg", "_info.txt")), "w")
-            xml_open.write(info_url)
-            xml_open.close()
+            if IS_INFO:
+                info_url = "https://www.flickr.com/photo.gne?id=" + row["image_id"]
+
+                xml_open = open(os.path.join(xml_path, filename.replace(".jpg", "_info.txt")), "w")
+                xml_open.write(info_url)
+                xml_open.close()
+
+        except Exception as e:
+            print("something error, skip:", e)
+
+
+
