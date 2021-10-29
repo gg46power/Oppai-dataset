@@ -193,9 +193,7 @@ if __name__ == "__main__":
                 urllib.request.urlretrieve(row["url"], os.path.join(jpg_path, filename))
 
             if IS_YOLO:
-                print("@@ start yolo")
                 # call voc to xml for yolo
-                print(row)
                 yx, yy, yw, yh = OppaiDB.convertYolo([row["width"],row["height"]],
                       [row["l"],
                        row["l"] + row["w"],
@@ -203,7 +201,6 @@ if __name__ == "__main__":
                        row["t"] + row["h"]])
                 yolo_txt = "0 " + str(yx) + " " + str(yy) + " " + str(yw) + " " + str(yh)
                 yolo_open = open(os.path.join(jpg_path, filename.replace(".jpg", ".txt")), "w")
-                print(os.path.join(jpg_path, filename.replace(".jpg", ".txt")), yolo_txt)
                 yolo_open.write(yolo_txt)
                 yolo_open.close()
 
